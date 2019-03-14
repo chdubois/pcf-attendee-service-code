@@ -1,0 +1,10 @@
+applications:
+- name: attendee 
+  disk_quota: 1G
+  instances: 1
+  memory: 1G
+  path: target/attendee-1.0.jar
+  random-route: true
+  services:
+  - mysql 
+  stack: cflinuxfs3
