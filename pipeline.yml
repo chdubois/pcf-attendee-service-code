@@ -1,0 +1,41 @@
+---
+resources:
+- name: github
+  type: git
+  source:
+    uri: https://github.com/chdubois/pcf-attendee-code.git 
+    branch: master
+
+- name: cf-push 
+  type: cf
+  source:
+    api: {{cf-api}}
+    username: {{cf-username}}
+    password: {{cf-password}}
+    organization: {{cf-organization}}
+    space: {{cf-space}}
+    #skip_cert_check: true
+- name: s3-release-bucket
+  type: s3
+  source:
+    bucket: pcf-concourse-release-bucket
+    versioned_file: attendee.jar
+    region_name: us-east-1
+    access_key_id: {{aws-access-key-id}}
+    secret_access_key: {{aws-secret-access-key}}
+jobs:
+- name: attendee-service-build
+  public: true
+  plan:
+  - get: github
+    trigger: true
+  - task: build-ui
+    file: github/ci/build.yml
+  - put: s3-release-bucket
+    params:
+      file: build-output/attendee.jar
+      acl: public-read
+  - put: cf-push
+    params:
+      manifest: github/manifest.yml
+      path: build-output/attendee.jar
