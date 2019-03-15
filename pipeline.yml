@@ -3,7 +3,7 @@ resources:
 - name: github
   type: git
   source:
-    uri: https://github.com/chdubois/pcf-attendee-code.git 
+    uri: https://github.com/chdubois/pcf-attendee-service-code.git 
     branch: master
 
 - name: cf-push 
